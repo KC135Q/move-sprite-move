@@ -1,9 +1,8 @@
-alert("Please move...")
-
-let myGamePiece
+let myGamePiece, myObstacle
 
 function startGame() {
-  myGamePiece = new component(30, 30, "./i/run-robot.png", 10, 120, "image")
+  myGamePiece = new Component(30, 30, "./i/run-robot.png", 10, 120, "image")
+  myObstacle = new Component(30, 30, "red", 75, 120)
   myGameArea.start()
 }
 
@@ -11,8 +10,21 @@ document.body.onkeydown = function (e) {
   var keys = {
     37: "left",
     39: "right",
+    38: "up",
   }
-  moveright()
+  console.log(e.keyCode)
+  switch (e.keyCode) {
+    case 38:
+      clearmove()
+      break
+    case 37:
+      moveleft()
+      break
+    case 39:
+      moveright()
+      break
+    default:
+  }
 }
 
 var myGameArea = {
@@ -33,7 +45,7 @@ var myGameArea = {
   },
 }
 
-function component(width, height, color, x, y, type) {
+function Component(width, height, color, x, y, type) {
   this.type = type
   if (type == "image") {
     this.image = new Image()
@@ -58,12 +70,34 @@ function component(width, height, color, x, y, type) {
     this.x += this.speedX
     this.y += this.speedY
   }
+  this.crashWith = function (otherobj) {
+    var myleft = this.x
+    var myright = this.x + this.width
+    var mytop = this.y
+    var mybottom = this.y + this.height
+    var otherleft = otherobj.x
+    var otherright = otherobj.x + otherobj.width
+    var othertop = otherobj.y
+    var otherbottom = otherobj.y + otherobj.height
+    var crash = true
+    if (mybottom < othertop || mytop > otherbottom || myright < otherleft || myleft > otherright) {
+      crash = false
+    }
+    return crash
+  }
 }
 
 function updateGameArea() {
-  myGameArea.clear()
-  myGamePiece.newPos()
-  myGamePiece.update()
+  if (myGamePiece.crashWith(myObstacle)) {
+    myGameArea.stop()
+    alert("Collision")
+  } else {
+    myGameArea.clear()
+    myGamePiece.newPos()
+    myGamePiece.update()
+    myObstacle.newPos()
+    myObstacle.update()
+  }
 }
 
 function moveup() {
