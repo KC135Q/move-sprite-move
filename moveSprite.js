@@ -1,8 +1,8 @@
 let myGamePiece, myObstacle
 
 function startGame() {
-  myGamePiece = new Component(30, 30, "./i/run-robot.png", 10, 120, "image")
-  myObstacle = new Component(30, 30, "red", 75, 120)
+  myGamePiece = new Component(125, 125, "./i/run-robot.png", 10, 120, "image")
+  myObstacle = new Component(125, 125, "red", 225, 120)
   myGameArea.start()
 }
 
@@ -90,7 +90,7 @@ function Component(width, height, color, x, y, type) {
 function updateGameArea() {
   if (myGamePiece.crashWith(myObstacle)) {
     myGameArea.stop()
-    alert("Collision")
+    document.getElementById("notifications").textContent = "Collision!!!"
   } else {
     myGameArea.clear()
     myGamePiece.newPos()
